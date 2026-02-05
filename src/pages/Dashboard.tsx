@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MacroHeroCard } from "@/components/dashboard/MacroHeroCard";
@@ -5,6 +7,9 @@ import { QuickStats } from "@/components/dashboard/QuickStats";
 import { MealCard } from "@/components/dashboard/MealCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { LogMealSheet } from "@/components/log/LogMealSheet";
+import { LogWeightSheet } from "@/components/log/LogWeightSheet";
+import { toast } from "sonner";
 
 // Mock data - in a real app this would come from state/API
 const mockMacros = {
@@ -48,6 +53,40 @@ const mockMeals = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [showLogMeal, setShowLogMeal] = useState(false);
+  const [showLogWeight, setShowLogWeight] = useState(false);
+  const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
+
+  const handleMealClick = (meal: typeof mockMeals[0]) => {
+    if (meal.isLogged) {
+      toast.info(`${meal.name}`, {
+        description: `${meal.calories} cal • P: ${meal.protein}g C: ${meal.carbs}g F: ${meal.fats}g`,
+      });
+    } else {
+      setShowLogMeal(true);
+    }
+  };
+
+  const handleViewBreakdown = () => {
+    toast.info("Macro breakdown", {
+      description: "Detailed view coming soon!",
+    });
+  };
+
+  const handleWeightClick = () => {
+    setShowLogWeight(true);
+  };
+
+  const handleStreakClick = () => {
+    navigate("/progress");
+  };
+
+  const handleDismissInsight = (insightId: string) => {
+    setDismissedInsights(prev => [...prev, insightId]);
+    toast.success("Insight dismissed for 7 days");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Fixed Header */}
@@ -57,10 +96,16 @@ const Dashboard = () => {
       <ScrollArea className="h-[calc(100vh-64px-80px)]">
         <div className="pb-8">
           {/* Hero Macro Card */}
-          <MacroHeroCard {...mockMacros} />
+          <MacroHeroCard {...mockMacros} onViewBreakdown={handleViewBreakdown} />
 
           {/* Quick Stats */}
-          <QuickStats currentWeight={142.6} weightChange={-0.4} streak={12} />
+          <QuickStats 
+            currentWeight={142.6} 
+            weightChange={-0.4} 
+            streak={12}
+            onWeightClick={handleWeightClick}
+            onStreakClick={handleStreakClick}
+          />
 
           {/* Meals Section */}
           <section className="mt-6 px-4">
@@ -79,6 +124,7 @@ const Dashboard = () => {
                   calories={meal.calories}
                   isLogged={meal.isLogged}
                   delay={0.3 + index * 0.1}
+                  onClick={() => handleMealClick(meal)}
                 />
               ))}
             </div>
@@ -90,29 +136,37 @@ const Dashboard = () => {
               Insights
             </h2>
             <div className="space-y-3">
-              <InsightCard
-                icon="💪"
-                headline="You're on a roll!"
-                body="You've hit your protein target 12 days in a row. Keep going!"
-                variant="protein"
-                ctaText="View Streak"
-                onAction={() => {}}
-                delay={0.6}
-              />
-              <InsightCard
-                icon="📉"
-                headline="Progress Update"
-                body="You're down 2.4 lbs this week. Your plan is working!"
-                variant="primary"
-                ctaText="See Trends"
-                onAction={() => {}}
-                onDismiss={() => {}}
-                delay={0.7}
-              />
+              {!dismissedInsights.includes("streak") && (
+                <InsightCard
+                  icon="💪"
+                  headline="You're on a roll!"
+                  body="You've hit your protein target 12 days in a row. Keep going!"
+                  variant="protein"
+                  ctaText="View Streak"
+                  onAction={() => navigate("/progress")}
+                  delay={0.6}
+                />
+              )}
+              {!dismissedInsights.includes("progress") && (
+                <InsightCard
+                  icon="📉"
+                  headline="Progress Update"
+                  body="You're down 2.4 lbs this week. Your plan is working!"
+                  variant="primary"
+                  ctaText="See Trends"
+                  onAction={() => navigate("/progress")}
+                  onDismiss={() => handleDismissInsight("progress")}
+                  delay={0.7}
+                />
+              )}
             </div>
           </section>
         </div>
       </ScrollArea>
+
+      {/* Log Sheets */}
+      <LogMealSheet open={showLogMeal} onOpenChange={setShowLogMeal} />
+      <LogWeightSheet open={showLogWeight} onOpenChange={setShowLogWeight} />
 
       {/* Bottom Navigation */}
       <BottomNav />

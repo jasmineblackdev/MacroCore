@@ -11,6 +11,7 @@ interface MacroHeroCardProps {
   fatsTarget: number;
   caloriesCurrent: number;
   caloriesTarget: number;
+  onViewBreakdown?: () => void;
 }
 
 export const MacroHeroCard = ({
@@ -22,9 +23,8 @@ export const MacroHeroCard = ({
   fatsTarget,
   caloriesCurrent,
   caloriesTarget,
+  onViewBreakdown,
 }: MacroHeroCardProps) => {
-  const totalProgress = Math.round((caloriesCurrent / caloriesTarget) * 100);
-
   const macros = [
     { label: "P", value: proteinCurrent, target: proteinTarget, color: "text-protein-teal" },
     { label: "C", value: carbsCurrent, target: carbsTarget, color: "text-carb-amber" },
@@ -62,7 +62,10 @@ export const MacroHeroCard = ({
         </div>
 
         {/* Link to full breakdown */}
-        <button className="flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+        <button 
+          onClick={onViewBreakdown}
+          className="flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        >
           View Full Breakdown
           <ChevronRight className="w-4 h-4" />
         </button>
