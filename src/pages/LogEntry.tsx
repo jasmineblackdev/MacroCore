@@ -1,13 +1,35 @@
+import { useState } from "react";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import { UtensilsCrossed, Scale, Droplets } from "lucide-react";
+import { LogMealSheet } from "@/components/log/LogMealSheet";
+import { LogWeightSheet } from "@/components/log/LogWeightSheet";
+import { LogWaterSheet } from "@/components/log/LogWaterSheet";
+
+type LogType = "meal" | "weight" | "water" | null;
 
 const LogEntry = () => {
+  const [openSheet, setOpenSheet] = useState<LogType>(null);
+
   const logOptions = [
-    { icon: UtensilsCrossed, label: "Log Meal", description: "Add food to your daily log" },
-    { icon: Scale, label: "Log Weight", description: "Record your current weight" },
-    { icon: Droplets, label: "Log Water", description: "Track your hydration" },
+    { 
+      icon: UtensilsCrossed, 
+      label: "Log Meal", 
+      description: "Add food to your daily log",
+      type: "meal" as const,
+    },
+    { 
+      icon: Scale, 
+      label: "Log Weight", 
+      description: "Record your current weight",
+      type: "weight" as const,
+    },
+    { 
+      icon: Droplets, 
+      label: "Log Water", 
+      description: "Track your hydration",
+      type: "water" as const,
+    },
   ];
 
   return (
@@ -20,11 +42,11 @@ const LogEntry = () => {
         <div className="p-4 space-y-4">
           <p className="text-muted-foreground text-sm">What would you like to log?</p>
           
-          {logOptions.map((option, index) => (
-            <Button
+          {logOptions.map((option) => (
+            <button
               key={option.label}
-              variant="outline"
-              className="w-full h-20 flex items-center justify-start gap-4 p-4 bg-card border-border/30 hover:bg-accent"
+              onClick={() => setOpenSheet(option.type)}
+              className="w-full h-20 flex items-center justify-start gap-4 p-4 bg-card border border-border/30 rounded-xl hover:bg-accent transition-colors"
             >
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <option.icon className="w-6 h-6 text-primary" />
@@ -33,10 +55,15 @@ const LogEntry = () => {
                 <span className="text-base font-semibold text-foreground">{option.label}</span>
                 <p className="text-sm text-muted-foreground">{option.description}</p>
               </div>
-            </Button>
+            </button>
           ))}
         </div>
       </ScrollArea>
+
+      {/* Bottom Sheets */}
+      <LogMealSheet open={openSheet === "meal"} onOpenChange={(open) => !open && setOpenSheet(null)} />
+      <LogWeightSheet open={openSheet === "weight"} onOpenChange={(open) => !open && setOpenSheet(null)} />
+      <LogWaterSheet open={openSheet === "water"} onOpenChange={(open) => !open && setOpenSheet(null)} />
 
       <BottomNav />
     </div>
