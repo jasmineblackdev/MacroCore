@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Dumbbell, Scale } from "lucide-react";
-import type { Goal } from "@/pages/Index";
+import type { Goal } from "@/pages/Onboarding";
 
 interface GoalScreenProps {
   selected: Goal;

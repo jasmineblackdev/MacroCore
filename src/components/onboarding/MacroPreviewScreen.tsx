@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MacroRings, MacroLegend } from "@/components/MacroRings";
 import { Sparkles, Check } from "lucide-react";
-import type { OnboardingData } from "@/pages/Index";
+import type { OnboardingData } from "@/pages/Onboarding";
 
 interface MacroPreviewScreenProps {
   data: OnboardingData;

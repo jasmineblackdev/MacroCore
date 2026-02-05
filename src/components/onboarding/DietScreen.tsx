@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Beef, Leaf, Vegan, Fish } from "lucide-react";
-import type { Diet } from "@/pages/Index";
+import type { Diet } from "@/pages/Onboarding";
 
 interface DietScreenProps {
   selected: Diet;
