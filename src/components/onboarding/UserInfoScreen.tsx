@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import type { UserInfo } from "@/pages/Index";
+import type { UserInfo } from "@/pages/Onboarding";
 
 interface UserInfoScreenProps {
   userInfo: UserInfo;

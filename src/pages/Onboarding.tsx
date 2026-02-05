@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { WelcomeScreen } from "@/components/onboarding/WelcomeScreen";
 import { GoalScreen } from "@/components/onboarding/GoalScreen";
 import { DietScreen } from "@/components/onboarding/DietScreen";
@@ -27,7 +28,8 @@ export interface OnboardingData {
   bodyScanCompleted: boolean;
 }
 
-const Index = () => {
+const Onboarding = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<OnboardingData>({
     goal: null,
@@ -49,6 +51,11 @@ const Index = () => {
 
   const nextStep = () => setStep((prev) => prev + 1);
   const skipToReady = () => setStep(7);
+
+  const handleComplete = () => {
+    // In a real app, save user data to backend/state
+    navigate("/dashboard");
+  };
 
   const pageVariants = {
     initial: { opacity: 0, x: 50 },
@@ -114,7 +121,7 @@ const Index = () => {
               onSkip={nextStep}
             />
           )}
-          {step === 7 && <PlanReadyScreen data={data} />}
+          {step === 7 && <PlanReadyScreen data={data} onComplete={handleComplete} />}
         </motion.div>
       </AnimatePresence>
 
@@ -139,4 +146,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Onboarding;

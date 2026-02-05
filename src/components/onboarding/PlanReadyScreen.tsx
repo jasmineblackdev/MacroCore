@@ -8,13 +8,14 @@ import {
   ChevronRight,
   Check,
 } from "lucide-react";
-import type { OnboardingData } from "@/pages/Index";
+import type { OnboardingData } from "@/pages/Onboarding";
 
 interface PlanReadyScreenProps {
   data: OnboardingData;
+  onComplete?: () => void;
 }
 
-export const PlanReadyScreen = ({ data }: PlanReadyScreenProps) => {
+export const PlanReadyScreen = ({ data, onComplete }: PlanReadyScreenProps) => {
   // Calculate optimized macros (slightly adjusted if body scan completed)
   const weight = parseInt(data.userInfo.weight) || 70;
   const goal = data.goal;
@@ -158,6 +159,7 @@ export const PlanReadyScreen = ({ data }: PlanReadyScreenProps) => {
       >
         <Button
           size="lg"
+          onClick={onComplete}
           className="w-full bg-gradient-hero hover:opacity-90 text-white py-6 text-lg font-semibold rounded-2xl shadow-button transition-all hover:scale-[1.02]"
         >
           Start Using MacroCore
