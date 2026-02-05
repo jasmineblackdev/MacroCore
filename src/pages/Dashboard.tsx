@@ -6,12 +6,21 @@ import { MacroHeroCard } from "@/components/dashboard/MacroHeroCard";
 import { QuickStats } from "@/components/dashboard/QuickStats";
 import { MealCard } from "@/components/dashboard/MealCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
+import { MacroInsightsCard } from "@/components/dashboard/MacroInsightsCard";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { LogMealSheet } from "@/components/log/LogMealSheet";
 import { LogWeightSheet } from "@/components/log/LogWeightSheet";
 import { toast } from "sonner";
 
-// Mock data - in a real app this would come from state/API
+// Mock user profile
+const mockUserProfile = {
+  goal: "lose-fat" as const,
+  dietType: "omnivore" as const,
+  proteinTarget: 180,
+  carbsTarget: 220,
+  fatsTarget: 65,
+  caloriesTarget: 2200,
+};
 const mockMacros = {
   proteinCurrent: 152,
   proteinTarget: 180,
@@ -128,6 +137,22 @@ const Dashboard = () => {
                 />
               ))}
             </div>
+          </section>
+
+          {/* AI Macro Analysis */}
+          <section className="mt-6 px-4">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              AI Nutrition Analysis
+            </h2>
+            <MacroInsightsCard
+              userProfile={mockUserProfile}
+              currentMacros={{
+                protein: mockMacros.proteinCurrent,
+                carbs: mockMacros.carbsCurrent,
+                fats: mockMacros.fatsCurrent,
+                calories: mockMacros.caloriesCurrent,
+              }}
+            />
           </section>
 
           {/* Insights Section */}

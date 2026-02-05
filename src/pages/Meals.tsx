@@ -4,9 +4,22 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { MealBrowserCard, MealData } from "@/components/meals/MealBrowserCard";
 import { MealFilters } from "@/components/meals/MealFilters";
+import { AIMealSuggestions } from "@/components/meals/AIMealSuggestions";
+import { MealPlanGenerator } from "@/components/meals/MealPlanGenerator";
 import { mockMeals } from "@/data/mockMeals";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
+import { SuggestedMeal } from "@/hooks/useNutritionAI";
+
+// Mock user profile - in a real app this would come from state/context
+const mockUserProfile = {
+  goal: "lose-fat" as const,
+  dietType: "omnivore" as const,
+  proteinTarget: 180,
+  carbsTarget: 220,
+  fatsTarget: 65,
+  caloriesTarget: 2200,
+};
 
 const Meals = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +45,24 @@ const Meals = () => {
         description: `${meal.protein}g protein • ${meal.calories} calories`,
       });
     }
+  };
+
+  const handleAddAIMeal = (meal: SuggestedMeal) => {
+    // Convert AI meal to MealData format and add to list
+    const newMeal: MealData = {
+      id: `ai-${Date.now()}`,
+      name: meal.name,
+      description: meal.description,
+      protein: meal.protein,
+      carbs: meal.carbs,
+      fats: meal.fats,
+      calories: meal.calories,
+      dietType: mockUserProfile.dietType,
+      mealType: "lunch", // Default
+      imageEmoji: "✨",
+      isAdded: true,
+    };
+    setMeals(prev => [newMeal, ...prev]);
   };
 
   return (
@@ -63,8 +94,18 @@ const Meals = () => {
       </header>
 
       <ScrollArea className="h-[calc(100vh-220px-80px)]">
-        <div className="p-4">
-          <p className="text-sm text-muted-foreground mb-3">
+        <div className="p-4 space-y-4">
+          {/* Meal Plan Generator */}
+          <MealPlanGenerator userProfile={mockUserProfile} />
+
+          {/* AI Meal Suggestions */}
+          <AIMealSuggestions
+            userProfile={mockUserProfile}
+            mealType={selectedMealType !== "all" ? selectedMealType as any : undefined}
+            onAddMeal={handleAddAIMeal}
+          />
+          
+          <p className="text-sm text-muted-foreground">
             {filteredMeals.length} meals found
           </p>
           
